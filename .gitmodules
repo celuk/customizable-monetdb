@@ -1,0 +1,3 @@
+[submodule "MonetDB"]
+	path = MonetDB
+	url = https://github.com/MonetDB/MonetDB
