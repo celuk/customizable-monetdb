@@ -1,0 +1,1280 @@
+cmake_minimum_required(VERSION 3.9)
+project(Custom_MonetDB)
+
+set(CMAKE_CXX_STANDARD 11)
+
+#set (CMAKE_C_FLAGS "-D_GNU_SOURCE -DLIBGDK -DLIBMONETDB5 -DLIBMAL -DLIBOPTIMIZER -DLIBSTREAM -DLIBSQL -shared -static")
+
+#set (CMAKE_C_FLAGS "-DHAVE_ICONV -DHAVE_ICONV_H  -D_GNU_SOURCE -DLIBGDK -DLIBMONETDB5 -DLIBMAL -DLIBOPTIMIZER -DLIBSTREAM -DLIBSQL -DLIBMAPI -DLIBMONETDBE -DLIBMONETODBC -DLIBMONETODBCS -DLIBGEOM -DLIBGEOM_H -DLIBGENERATOR -DLIBUDF -DLIBFITS -DLIBNCDF -DLIBGTIFF")
+
+set (CMAKE_C_FLAGS "-D_GNU_SOURCE -DLIBGDK -DLIBMONETDB5 -DLIBMAL -DLIBOPTIMIZER -DLIBSTREAM -DLIBSQL -DLIBMONETDBE -DLIBGENERATOR -DLIBFITS -DLIBNCDF -DLIBGTIFF") #-DCHECKFUNCTIONEXISTS=lzma_easy_encoder
+
+#set(CMAKE_MODULE_PATH
+#  "${MONETDB_PROJECT_DIR}/cmake"
+#  "${MONETDB_PROJECT_DIR}/cmake/Modules"
+#  CACHE
+#  INTERNAL
+#  "Location of custom CMake modules.")
+#
+#include(CMakeDependentOption REQUIRED)
+#include(monetdb-options)
+#include(monetdb-versions)
+#project(MonetDB VERSION "${MONETDB_VERSION}" LANGUAGES C)
+#set(CMAKE_PROJECT_HOMEPAGE_URL "https://www.monetdb.org/")
+#set(C_STANDARD_REQUIRED ON)
+#set(CMAKE_C_STANDARD 99)
+#
+## We give precedence to UNIX include directories over
+## OS X Frameworks directories
+#set(CMAKE_FIND_FRAMEWORK LAST)
+#set(CMAKE_FIND_APPBUNDLE LAST)
+#
+#include(CheckCSourceCompiles REQUIRED)
+#include(CheckCCompilerFlag REQUIRED)
+#include(CheckIncludeFile REQUIRED)
+#include(CheckIncludeFiles REQUIRED)
+#include(CMakePushCheckState REQUIRED)
+#include(CheckStructHasMember REQUIRED)
+#include(CheckSymbolExists REQUIRED)
+#include(CheckFunctionExists REQUIRED)
+#include(CheckTypeSize REQUIRED)
+#include(TestBigEndian REQUIRED)
+#
+#if(WIN32)
+#  set(CMAKE_REQUIRED_LIBRARIES  ws2_32.lib shell32.lib advapi32.lib)
+#endif()
+#test_big_endian(IS_BIG_ENDIAN)
+#
+## Include MonetDB specific functions
+#include(${MONETDB_PROJECT_DIR}/cmake/monetdb-functions.cmake)
+#include(${MONETDB_PROJECT_DIR}/cmake/monetdb-findpackages.cmake)
+#include(${MONETDB_PROJECT_DIR}/cmake/monetdb-toolchain.cmake)
+#monetdb_default_compiler_options()
+#
+#include(monetdb-defines)
+#
+## required for symbol existance tests
+#if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+#  add_definitions(-D_XOPEN_SOURCE -D_GNU_SOURCE)
+#  set(CMAKE_REQUIRED_DEFINITIONS "${CMAKE_REQUIRED_DEFINITIONS} -D_GNU_SOURCE")
+#endif()
+#
+#monetdb_configure_defines()
+#
+#if(HAVE_NETDB_H)
+#  set(CMAKE_EXTRA_INCLUDE_FILES "netdb.h" "unistd.h")
+#endif()
+#if(NOT HAVE_SYS_SOCKET_H)
+#  if(HAVE_WINSOCK_H)
+#    set(CMAKE_EXTRA_INCLUDE_FILES "winsock.h")
+#  endif()
+#endif()
+#
+#monetdb_configure_sizes()
+
+include_directories(${MONETDB_PROJECT_DIR})
+include_directories(${MONETDB_PROJECT_DIR}/common)
+include_directories(${MONETDB_PROJECT_DIR}/common/utils)
+include_directories(${MONETDB_PROJECT_DIR}/common/stream)
+include_directories(${MONETDB_PROJECT_DIR}/common/options)
+include_directories(${MONETDB_PROJECT_DIR}/gdk)
+include_directories(${MONETDB_PROJECT_DIR}/monetdb5/mal)
+include_directories(${MONETDB_PROJECT_DIR}/monetdb5/mal/modules)
+include_directories(${MONETDB_PROJECT_DIR}/monetdb5/mal/optimizer)
+include_directories(${MONETDB_PROJECT_DIR}/monetdb5/mal/sqlbackend)
+include_directories(${MONETDB_PROJECT_DIR}/monetdb5/modules/kernel)
+include_directories(${MONETDB_PROJECT_DIR}/monetdb5/modules/atoms)
+include_directories(${MONETDB_PROJECT_DIR}/monetdb5/modules/mal)
+include_directories(${MONETDB_PROJECT_DIR}/monetdb5/optimizer)
+include_directories(${MONETDB_PROJECT_DIR}/sql/common)
+include_directories(${MONETDB_PROJECT_DIR}/sql/include)
+include_directories(${MONETDB_PROJECT_DIR}/sql/server)
+include_directories(${MONETDB_PROJECT_DIR}/sql/storage)
+include_directories(${MONETDB_PROJECT_DIR}/sql/storage/bat)
+include_directories(${MONETDB_PROJECT_DIR}/clients/mapilib)
+include_directories(${MONETDB_PROJECT_DIR}/clients/mapiclient)
+
+include_directories(${MONETDB_PROJECT_DIR}/sql/backends/monet5)
+
+include_directories(${MONETDB_BUILD_DIR})
+include_directories(${MONETDB_BUILD_DIR}/sql/server)
+
+include_directories(${MONETDB_BUILD_DIR}/common)
+include_directories(${MONETDB_BUILD_DIR}/common/utils)
+
+add_library(monetdb5 SHARED
+        ${MONETDB_BUILD_DIR}/monetdb_config.h
+        ${MONETDB_PROJECT_DIR}/monetdb_config.h.in
+        #${MONETDB_PROJECT_DIR}/common/utils/matomic.h
+        #${MONETDB_PROJECT_DIR}/common/utils/mutils.c
+        #${MONETDB_PROJECT_DIR}/common/utils/mutils.h
+        #${MONETDB_PROJECT_DIR}/common/stream/stream_internal.h
+        #${MONETDB_PROJECT_DIR}/common/stream/stdio_stream.c
+        #${MONETDB_PROJECT_DIR}/common/stream/bs.c
+        #${MONETDB_PROJECT_DIR}/common/stream/stream.c
+        #${MONETDB_PROJECT_DIR}/common/stream/stream.h
+        #${MONETDB_PROJECT_DIR}/common/stream/memio.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_analytic.h
+        #${MONETDB_PROJECT_DIR}/gdk/gdk.h
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_aggr.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_align.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_atoms.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_atoms.h
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_bat.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_batop.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_bbp.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_bbp.h
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_calc_compare_eq.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_calc_compare_le.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_calc.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_calc.h
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_calc_compare.h
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_calc_private.h
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_cand.h
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_cand.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_cross.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_delta.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_delta.h
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_firstn.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_group.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_hash.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_hash.h
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_heap.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_imprints.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_imprints.h
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_join.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_logger.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_logger.h
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_orderidx.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_posix.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_posix.h
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_private.h
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_project.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_qsort.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_qsort_impl.h
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_sample.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_search.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_select.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_ssort.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_ssort_impl.h
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_storage.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_system.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_system.h
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_system_private.h
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_string.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_strimps.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_tm.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_time.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_time.h
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_tracer.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_unique.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_utils.c
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_utils.h
+        #${MONETDB_PROJECT_DIR}/gdk/gdk_value.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_resource.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_embedded.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_authorize.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_atom.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_atom.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_builder.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_builder.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_client.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_client.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_dataflow.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_dataflow.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_errors.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_exception.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_exception.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_function.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_function.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_import.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_import.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_instruction.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_instruction.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_interpreter.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_interpreter.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_linker.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_linker.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_listing.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_listing.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_module.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_module.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_namespace.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_namespace.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_parser.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_parser.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_private.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_resolve.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_resolve.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_runtime.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_runtime.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_scenario.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_scenario.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_session.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_session.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_stack.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_stack.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_type.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_type.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_utils.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_utils.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/kernel/aggr.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/kernel/algebra.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/kernel/algebra.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/kernel/bat5.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/kernel/bat5.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/batcalc.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/batExtensions.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/kernel/batmmath.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/kernel/batstr.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/atoms/blob.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/calc.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/kernel/group.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/kernel/group.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/iterator.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/language.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/manifold.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/manifold.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/mat.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/mkey.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/kernel/mmath.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/atoms/mtime.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/atoms/mtime.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/orderidx.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/orderidx.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/pcre.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/projectionpath.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/sample.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/atoms/str.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/atoms/str.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/tablet.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/tablet.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_aliases.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_aliases.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_candidates.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_candidates.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_coercion.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_coercion.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_commonTerms.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_commonTerms.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_constants.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_constants.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_costModel.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_costModel.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_dataflow.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_dataflow.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_deadcode.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_deadcode.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_emptybind.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_emptybind.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_evaluate.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_evaluate.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_garbageCollector.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_garbageCollector.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_generator.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_generator.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_inline.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_inline.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_macro.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_macro.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_matpack.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_matpack.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_mergetable.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_mergetable.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_mitosis.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_mitosis.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_multiplex.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_multiplex.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_pipes.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_pipes.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_prelude.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_prelude.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_profiler.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_profiler.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_projectionpath.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_projectionpath.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_pushselect.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_pushselect.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_remap.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_remap.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_reorder.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_reorder.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_support.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_support.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_fastpath.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_querylog.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_querylog.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_wrapper.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/optimizer.c
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/optimizer.h
+        #${MONETDB_PROJECT_DIR}/monetdb5/optimizer/optimizer_private.h
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/for.c
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/mal_backend.c
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/mal_backend.h
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/rel_bin.c
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/rel_bin.h
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql.c
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql.h
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_assert.c
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_assert.h
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_cast.c
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_cast.h
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_cast_impl_int.h
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_cat.c
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_cat.h
+        #${MONETDB_PROJECT_DIR}/sql/server/sql_var.c
+        #${MONETDB_PROJECT_DIR}/sql/server/sql_mvc.h
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_execute.c
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_execute.c
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_execute.h
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_fround.c
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_fround_impl.h
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_gencode.c
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_gencode.h
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_optimizer.c
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_optimizer.h
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_orderidx.c
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_orderidx.h
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_rank.c
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_rank.h
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_result.c
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_result.h
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_round.c
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_round_impl.h
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_scenario.c
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_scenario.h
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_statement.c
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_statement.h
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_statistics.c
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_statistics.h
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_transaction.c
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_transaction.h
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_upgrades.c
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_upgrades.h
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_user.c
+        #${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_user.h
+        #${MONETDB_PROJECT_DIR}/sql/common/sql_backend.c
+        #${MONETDB_PROJECT_DIR}/sql/common/sql_backend.h
+        #${MONETDB_PROJECT_DIR}/sql/common/sql_changeset.c
+        #${MONETDB_PROJECT_DIR}/sql/common/sql_hash.c
+        #${MONETDB_PROJECT_DIR}/sql/common/sql_keyword.c
+        #${MONETDB_PROJECT_DIR}/sql/common/sql_list.c
+        #${MONETDB_PROJECT_DIR}/sql/common/sql_mem.c
+        #${MONETDB_PROJECT_DIR}/sql/common/sql_stack.c
+        #${MONETDB_PROJECT_DIR}/sql/common/sql_string.c
+        #${MONETDB_PROJECT_DIR}/sql/common/sql_string.h
+        #${MONETDB_PROJECT_DIR}/sql/common/sql_types.c
+        #${MONETDB_PROJECT_DIR}/sql/common/sql_types.h
+        #${MONETDB_PROJECT_DIR}/sql/storage/objlist.c
+        #${MONETDB_PROJECT_DIR}/sql/include/sql_catalog.h
+        #${MONETDB_PROJECT_DIR}/sql/include/sql_hash.h
+        #${MONETDB_PROJECT_DIR}/sql/include/sql_keyword.h
+        #${MONETDB_PROJECT_DIR}/sql/include/sql_list.h
+        #${MONETDB_PROJECT_DIR}/sql/include/sql_mem.h
+        #${MONETDB_PROJECT_DIR}/sql/server/sql_query.h
+        #${MONETDB_PROJECT_DIR}/sql/include/sql_relation.h
+        #${MONETDB_PROJECT_DIR}/sql/include/sql_stack.h
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_distribute.c
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_dump.c
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_dump.h
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_exp.c
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_exp.h
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_optimize_others.c
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_optimize_proj.c
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_optimize_exps.c
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_optimize_sel.c
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_statistics.c
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_statistics_functions.c
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_optimizer.c
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_optimizer.h
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_partition.c
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_partition.h
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_planner.c
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_planner.h
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_prop.c
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_prop.h
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_psm.c
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_psm.h
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_rel.c
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_rel.h
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_remote.c
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_remote.h
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_schema.c
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_schema.h
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_select.c
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_select.h
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_semantic.c
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_semantic.h
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_sequence.c
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_sequence.h
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_trans.c
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_trans.h
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_updates.c
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_updates.h
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_xml.c
+        #${MONETDB_PROJECT_DIR}/sql/server/rel_xml.h
+        #${MONETDB_PROJECT_DIR}/sql/server/sql_atom.c
+        #${MONETDB_PROJECT_DIR}/sql/server/sql_atom.h
+        #${MONETDB_PROJECT_DIR}/sql/server/sql_datetime.c
+        #${MONETDB_PROJECT_DIR}/sql/server/sql_datetime.h
+        #${MONETDB_PROJECT_DIR}/sql/server/sql_decimal.c
+        #${MONETDB_PROJECT_DIR}/sql/server/sql_decimal.h
+        #${MONETDB_PROJECT_DIR}/sql/server/sql_env.c
+        #${MONETDB_PROJECT_DIR}/sql/server/sql_env.h
+        #${MONETDB_PROJECT_DIR}/sql/server/sql_mvc.c
+        #${MONETDB_PROJECT_DIR}/sql/server/sql_mvc.h
+        #${MONETDB_PROJECT_DIR}/sql/server/sql_parser.h
+        #${MONETDB_BUILD_DIR}/sql/server/sql_parser.tab.c
+        #${MONETDB_BUILD_DIR}/sql/server/sql_parser.tab.h
+        #${MONETDB_PROJECT_DIR}/sql/server/sql_privileges.c
+        #${MONETDB_PROJECT_DIR}/sql/server/sql_privileges.h
+        #${MONETDB_PROJECT_DIR}/sql/server/sql_qc.c
+        #${MONETDB_PROJECT_DIR}/sql/server/sql_qc.h
+        #${MONETDB_PROJECT_DIR}/sql/server/sql_scan.c
+        #${MONETDB_PROJECT_DIR}/sql/server/sql_scan.h
+        #${MONETDB_PROJECT_DIR}/sql/server/sql_semantic.c
+        #${MONETDB_PROJECT_DIR}/sql/server/sql_semantic.h
+        #${MONETDB_PROJECT_DIR}/sql/server/sql_symbol.c
+        #${MONETDB_PROJECT_DIR}/sql/server/sql_symbol.h
+        #${MONETDB_PROJECT_DIR}/sql/storage/bat/bat_logger.c
+        #${MONETDB_PROJECT_DIR}/sql/storage/bat/bat_logger.h
+        #${MONETDB_PROJECT_DIR}/sql/storage/bat/bat_storage.c
+        #${MONETDB_PROJECT_DIR}/sql/storage/bat/bat_storage.h
+        #${MONETDB_PROJECT_DIR}/sql/storage/bat/bat_table.c
+        #${MONETDB_PROJECT_DIR}/sql/storage/bat/bat_table.h
+        #${MONETDB_PROJECT_DIR}/sql/storage/bat/bat_utils.c
+        #${MONETDB_PROJECT_DIR}/sql/storage/bat/bat_utils.h
+        #${MONETDB_PROJECT_DIR}/sql/storage/bat/res_table.c
+        #${MONETDB_PROJECT_DIR}/sql/storage/bat/res_table.h
+        #${MONETDB_PROJECT_DIR}/sql/storage/sql_catalog.c
+        #${MONETDB_PROJECT_DIR}/sql/storage/sql_storage.h
+        #${MONETDB_PROJECT_DIR}/sql/storage/store.c
+        #${MONETDB_PROJECT_DIR}/sql/storage/store_dependency.c
+        #${MONETDB_PROJECT_DIR}/sql/storage/store_dependency.h
+        #${MONETDB_PROJECT_DIR}/sql/storage/store_sequence.c
+        #${MONETDB_PROJECT_DIR}/sql/storage/store_sequence.h
+        
+
+${MONETDB_BUILD_DIR}/monetdb_config.h
+${MONETDB_PROJECT_DIR}/monetdb_config.h.in
+
+${MONETDB_BUILD_DIR}/sql/server/sql_parser.tab.c
+${MONETDB_BUILD_DIR}/sql/server/sql_parser.tab.h
+
+${MONETDB_PROJECT_DIR}/sql/storage/sql_storage.h
+${MONETDB_PROJECT_DIR}/sql/storage/bat/bat_table.h
+${MONETDB_PROJECT_DIR}/sql/storage/bat/bat_storage.h
+${MONETDB_PROJECT_DIR}/sql/storage/bat/bat_logger.h
+${MONETDB_PROJECT_DIR}/sql/storage/bat/bat_utils.h
+${MONETDB_PROJECT_DIR}/sql/storage/bat/res_table.h
+${MONETDB_PROJECT_DIR}/sql/storage/store_dependency.h
+${MONETDB_PROJECT_DIR}/sql/storage/store_sequence.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/rel_bin.h
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/UDF/capi/cheader.text.h
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/UDF/capi/cheader.h
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/UDF/pyapi3/formatinput.h
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/UDF/pyapi3/connection.h
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/UDF/pyapi3/unicode.h
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/UDF/pyapi3/type_conversion.h
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/UDF/pyapi3/undef.h
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/UDF/pyapi3/emit.h
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/UDF/pyapi3/convert_loops.h
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/UDF/pyapi3/pyapi.h
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/UDF/pyapi3/pyheader.h
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/UDF/pyapi3/conversion.h
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/UDF/pyapi3/pytypes.h
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/UDF/udf/udf.h
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/UDF/udf/udf_impl.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/mal_backend.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_fround_impl.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_cast.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_upgrades.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_orderidx.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/opt_backend.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_subquery.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_strimps.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_user.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_round_impl.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/dict.h
+
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/vaults/shp/shp.h
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/vaults/netcdf/netcdf_vault.h
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/vaults/fits/fits.h
+
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_scenario.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_bincopyconvert.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_cat.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_gencode.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_optimizer.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_cast_impl_int.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_import.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/rel_physical.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_execute.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_transaction.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/for.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_assert.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/generator/generator.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_result.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_rank.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_statement.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_statistics.h
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/rel_predicates.h
+${MONETDB_PROJECT_DIR}/sql/server/sql_decimal.h
+${MONETDB_PROJECT_DIR}/sql/server/sql_datetime.h
+${MONETDB_PROJECT_DIR}/sql/server/sql_symbol.h
+${MONETDB_PROJECT_DIR}/sql/server/rel_psm.h
+${MONETDB_PROJECT_DIR}/sql/server/rel_propagate.h
+${MONETDB_PROJECT_DIR}/sql/server/rel_dump.h
+${MONETDB_PROJECT_DIR}/sql/server/rel_schema.h
+${MONETDB_PROJECT_DIR}/sql/server/rel_semantic.h
+${MONETDB_PROJECT_DIR}/sql/server/sql_parser.h
+${MONETDB_PROJECT_DIR}/sql/server/rel_rewriter.h
+${MONETDB_PROJECT_DIR}/sql/server/rel_xml.h
+${MONETDB_PROJECT_DIR}/sql/server/sql_atom.h
+${MONETDB_PROJECT_DIR}/sql/server/sql_tokens.h
+${MONETDB_PROJECT_DIR}/sql/server/sql_scan.h
+${MONETDB_PROJECT_DIR}/sql/server/sql_partition.h
+${MONETDB_PROJECT_DIR}/sql/server/rel_updates.h
+${MONETDB_PROJECT_DIR}/sql/server/rel_exp.h
+${MONETDB_PROJECT_DIR}/sql/server/sql_mvc.h
+${MONETDB_PROJECT_DIR}/sql/server/rel_prop.h
+${MONETDB_PROJECT_DIR}/sql/server/rel_unnest.h
+${MONETDB_PROJECT_DIR}/sql/server/rel_rel.h
+${MONETDB_PROJECT_DIR}/sql/server/rel_partition.h
+${MONETDB_PROJECT_DIR}/sql/server/sql_query.h
+${MONETDB_PROJECT_DIR}/sql/server/rel_optimizer_private.h
+${MONETDB_PROJECT_DIR}/sql/server/rel_planner.h
+${MONETDB_PROJECT_DIR}/sql/server/sql_privileges.h
+${MONETDB_PROJECT_DIR}/sql/server/rel_remote.h
+${MONETDB_PROJECT_DIR}/sql/server/rel_trans.h
+${MONETDB_PROJECT_DIR}/sql/server/sql_semantic.h
+${MONETDB_PROJECT_DIR}/sql/server/rel_sequence.h
+${MONETDB_PROJECT_DIR}/sql/server/sql_qc.h
+${MONETDB_PROJECT_DIR}/sql/server/rel_statistics.h
+${MONETDB_PROJECT_DIR}/sql/server/rel_optimizer.h
+${MONETDB_PROJECT_DIR}/sql/server/rel_select.h
+${MONETDB_PROJECT_DIR}/sql/server/sql_env.h
+${MONETDB_PROJECT_DIR}/sql/server/rel_basetable.h
+${MONETDB_PROJECT_DIR}/sql/include/sql_list.h
+${MONETDB_PROJECT_DIR}/sql/include/sql_relation.h
+${MONETDB_PROJECT_DIR}/sql/include/sql_hash.h
+${MONETDB_PROJECT_DIR}/sql/include/sql_mem.h
+${MONETDB_PROJECT_DIR}/sql/include/sql_keyword.h
+${MONETDB_PROJECT_DIR}/sql/include/sql_stack.h
+${MONETDB_PROJECT_DIR}/sql/include/exception_buffer.h
+${MONETDB_PROJECT_DIR}/sql/include/sql_catalog.h
+${MONETDB_PROJECT_DIR}/sql/common/sql_backend.h
+${MONETDB_PROJECT_DIR}/sql/common/sql_string.h
+${MONETDB_PROJECT_DIR}/sql/common/sql_types.h
+
+${MONETDB_PROJECT_DIR}/clients/examples/C/bincopydata.h
+${MONETDB_PROJECT_DIR}/clients/examples/C/bincopydecimal_impl.h
+${MONETDB_PROJECT_DIR}/clients/mapiclient/mhelp.h
+${MONETDB_PROJECT_DIR}/clients/mapiclient/dotmonetdb.h
+${MONETDB_PROJECT_DIR}/clients/mapiclient/ReadlineTools.h
+#${MONETDB_PROJECT_DIR}/clients/mapiclient/msqldump.h
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/ODBCDbc.h
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/ODBCQueries.h
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/ODBCGlobal.h
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/ODBCUtil.h
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/ODBCEnv.h
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/ODBCStmt.h
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/ODBCError.h
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/ODBCDesc.h
+#${MONETDB_PROJECT_DIR}/clients/odbc/setup/drvcfg.h
+#${MONETDB_PROJECT_DIR}/clients/odbc/winsetup/resource.h
+${MONETDB_PROJECT_DIR}/clients/mapilib/mapi_querytype.h
+${MONETDB_PROJECT_DIR}/clients/mapilib/mapi.h
+#${MONETDB_PROJECT_DIR}/geom/lib/libgeom.h
+#${MONETDB_PROJECT_DIR}/geom/monetdb5/geom.h
+#${MONETDB_PROJECT_DIR}/ctest/tools/monetdbe/test_helper_template.h
+#${MONETDB_PROJECT_DIR}/ctest/tools/monetdbe/test_helper.h
+
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_type.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_resource.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_module.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_session.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_resolve.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_errors.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_atom.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_prelude.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_dataflow.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_utils.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_namespace.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_builder.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_runtime.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_internal.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_client.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_function.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_private.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_listing.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_scenario.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_instruction.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_authorize.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_interpreter.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mel.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_stack.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_embedded.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_exception.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_linker.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_parser.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_import.h
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_profiler.h
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/querylog.h
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/orderidx.h
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/manifold.h
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/tablet.h
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/clients.h
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/remote.h
+${MONETDB_PROJECT_DIR}/monetdb5/modules/atoms/xml.h
+${MONETDB_PROJECT_DIR}/monetdb5/modules/atoms/utf8.h
+${MONETDB_PROJECT_DIR}/monetdb5/modules/atoms/mtime.h
+${MONETDB_PROJECT_DIR}/monetdb5/modules/atoms/color.h
+${MONETDB_PROJECT_DIR}/monetdb5/modules/atoms/str.h
+${MONETDB_PROJECT_DIR}/monetdb5/modules/atoms/streams.h
+${MONETDB_PROJECT_DIR}/monetdb5/modules/kernel/group.h
+${MONETDB_PROJECT_DIR}/monetdb5/modules/kernel/mmath_private.h
+${MONETDB_PROJECT_DIR}/monetdb5/modules/kernel/bat5.h
+${MONETDB_PROJECT_DIR}/monetdb5/modules/kernel/algebra.h
+${MONETDB_PROJECT_DIR}/monetdb5/modules/kernel/aggr.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_remoteQueries.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_querylog.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_generator.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_dataflow.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_mitosis.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_remap.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_deadcode.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_macro.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/optimizer_private.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_reduce.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_coercion.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_fastpath.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_multiplex.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_commonTerms.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_support.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_aliases.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_postfix.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_projectionpath.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_profiler.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_mergetable.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_candidates.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_inline.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_pipes.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_emptybind.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_matpack.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_for.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_garbageCollector.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_reorder.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_evaluate.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/optimizer.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_prelude.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_costModel.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_constants.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_dict.h
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_pushselect.h
+${MONETDB_PROJECT_DIR}/gdk/xoshiro256starstar.h
+${MONETDB_PROJECT_DIR}/gdk/gdk_calc_private.h
+${MONETDB_PROJECT_DIR}/gdk/gdk_calc_compare.h
+${MONETDB_PROJECT_DIR}/gdk/gdk_posix.h
+${MONETDB_PROJECT_DIR}/gdk/gdk.h
+${MONETDB_PROJECT_DIR}/gdk/gdk_private.h
+${MONETDB_PROJECT_DIR}/gdk/gdk_subquery.h
+${MONETDB_PROJECT_DIR}/gdk/gdk_imprints.h
+${MONETDB_PROJECT_DIR}/gdk/gdk_atoms.h
+${MONETDB_PROJECT_DIR}/gdk/gdk_utils.h
+${MONETDB_PROJECT_DIR}/gdk/gdk_logger_internals.h
+${MONETDB_PROJECT_DIR}/gdk/gdk_hash.h
+${MONETDB_PROJECT_DIR}/gdk/gdk_cand.h
+${MONETDB_PROJECT_DIR}/gdk/gdk_qsort_impl.h
+${MONETDB_PROJECT_DIR}/gdk/gdk_calc.h
+${MONETDB_PROJECT_DIR}/gdk/gdk_strimps.h
+${MONETDB_PROJECT_DIR}/gdk/gdk_system_private.h
+${MONETDB_PROJECT_DIR}/gdk/gdk_system.h
+${MONETDB_PROJECT_DIR}/gdk/gdk_interprocess.h
+${MONETDB_PROJECT_DIR}/gdk/gdk_delta.h
+${MONETDB_PROJECT_DIR}/gdk/gdk_ssort_impl.h
+${MONETDB_PROJECT_DIR}/gdk/gdk_bbp.h
+${MONETDB_PROJECT_DIR}/gdk/gdk_time.h
+${MONETDB_PROJECT_DIR}/gdk/gdk_logger.h
+${MONETDB_PROJECT_DIR}/gdk/gdk_analytic.h
+${MONETDB_PROJECT_DIR}/gdk/gdk_tracer.h
+${MONETDB_PROJECT_DIR}/common/utils/sha-private.h
+${MONETDB_PROJECT_DIR}/common/utils/mstring.h
+${MONETDB_PROJECT_DIR}/common/utils/copybinary.h
+${MONETDB_PROJECT_DIR}/common/utils/ripemd160.h
+${MONETDB_PROJECT_DIR}/common/utils/rmd160.h
+${MONETDB_PROJECT_DIR}/common/utils/matomic.h
+${MONETDB_PROJECT_DIR}/common/utils/mprompt.h
+${MONETDB_PROJECT_DIR}/common/utils/sha.h
+${MONETDB_PROJECT_DIR}/common/utils/md5.h
+${MONETDB_PROJECT_DIR}/common/utils/msabaoth.h
+${MONETDB_PROJECT_DIR}/common/utils/mcrypt.h
+${MONETDB_PROJECT_DIR}/common/utils/mutils.h
+${MONETDB_PROJECT_DIR}/common/utils/muuid.h
+${MONETDB_PROJECT_DIR}/common/utils/copybinary_support.h
+${MONETDB_PROJECT_DIR}/common/options/monet_options.h
+${MONETDB_PROJECT_DIR}/common/options/monet_getopt.h
+${MONETDB_PROJECT_DIR}/common/stream/stream_socket.h
+${MONETDB_PROJECT_DIR}/common/stream/pump.h
+${MONETDB_PROJECT_DIR}/common/stream/mapi_prompt.h
+${MONETDB_PROJECT_DIR}/common/stream/stream.h
+${MONETDB_PROJECT_DIR}/common/stream/stream_internal.h
+
+#${MONETDB_PROJECT_DIR}/tools/merovingian/utils/control.h
+#${MONETDB_PROJECT_DIR}/tools/merovingian/utils/glob.h
+#${MONETDB_PROJECT_DIR}/tools/merovingian/utils/database.h
+#${MONETDB_PROJECT_DIR}/tools/merovingian/utils/utils.h
+#${MONETDB_PROJECT_DIR}/tools/merovingian/utils/properties.h
+#${MONETDB_PROJECT_DIR}/tools/merovingian/daemon/snapshot.h
+#${MONETDB_PROJECT_DIR}/tools/merovingian/daemon/discoveryrunner.h
+#${MONETDB_PROJECT_DIR}/tools/merovingian/daemon/forkmserver.h
+#${MONETDB_PROJECT_DIR}/tools/merovingian/daemon/controlrunner.h
+#${MONETDB_PROJECT_DIR}/tools/merovingian/daemon/proxy.h
+#${MONETDB_PROJECT_DIR}/tools/merovingian/daemon/handlers.h
+#${MONETDB_PROJECT_DIR}/tools/merovingian/daemon/client.h
+#${MONETDB_PROJECT_DIR}/tools/merovingian/daemon/argvcmds.h
+#${MONETDB_PROJECT_DIR}/tools/merovingian/daemon/multiplex-funnel.h
+#${MONETDB_PROJECT_DIR}/tools/merovingian/daemon/merovingian.h
+#${MONETDB_PROJECT_DIR}/tools/merovingian/daemon/connections.h
+#${MONETDB_PROJECT_DIR}/tools/monetdbe/monetdbe.h
+#${MONETDB_PROJECT_DIR}/tools/monetdbe/monetdbe_mapi.h
+#${MONETDB_PROJECT_DIR}/tools/mserver/monet_version.h
+
+${MONETDB_PROJECT_DIR}/sql/storage/bat/bat_utils.c
+${MONETDB_PROJECT_DIR}/sql/storage/bat/bat_storage.c
+${MONETDB_PROJECT_DIR}/sql/storage/bat/bat_table.c
+${MONETDB_PROJECT_DIR}/sql/storage/bat/res_table.c
+${MONETDB_PROJECT_DIR}/sql/storage/bat/bat_logger.c
+${MONETDB_PROJECT_DIR}/sql/storage/objectset.c
+${MONETDB_PROJECT_DIR}/sql/storage/store.c
+${MONETDB_PROJECT_DIR}/sql/storage/store_dependency.c
+${MONETDB_PROJECT_DIR}/sql/storage/objlist.c
+${MONETDB_PROJECT_DIR}/sql/storage/store_sequence.c
+${MONETDB_PROJECT_DIR}/sql/storage/sql_catalog.c
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/UDF/capi/capi.c
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/UDF/pyapi3/connection3.c
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/UDF/pyapi3/type_conversion3.c
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/UDF/pyapi3/unicode3.c
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/UDF/pyapi3/pyloader3.c
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/UDF/pyapi3/formatinput3.c
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/UDF/pyapi3/conversion3.c
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/UDF/pyapi3/pytypes3.c
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/UDF/pyapi3/emit3.c
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/UDF/pyapi3/pyapi3.c
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/UDF/udf/udf.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_cast.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_subquery.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_user.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_statistics.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/rel_predicates.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_assert.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/dict.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_strimps.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_orderidx.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_datetrunc.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_result.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/for.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_rank.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/rel_physical.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_bincopy.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_transaction.c
+
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/vaults/shp/shp.c
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/vaults/netcdf/netcdf.c
+#${MONETDB_PROJECT_DIR}/sql/backends/monet5/vaults/fits/fits.c
+
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_gencode.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_bincopyconvert.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_statement.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_time.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/rel_bin.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_execute.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_upgrades.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/mal_backend.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_cat.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_scenario.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_fround.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/generator/generator.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_round.c
+${MONETDB_PROJECT_DIR}/sql/backends/monet5/sql_optimizer.c
+${MONETDB_PROJECT_DIR}/sql/server/sql_env.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_updates.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_distribute.c
+${MONETDB_PROJECT_DIR}/sql/server/sql_decimal.c
+${MONETDB_PROJECT_DIR}/sql/server/sql_var.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_planner.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_exp.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_trans.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_rel.c
+${MONETDB_PROJECT_DIR}/sql/server/sql_qc.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_optimize_sel.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_schema.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_statistics_functions.c
+${MONETDB_PROJECT_DIR}/sql/server/sql_symbol.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_select.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_rewriter.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_dump.c
+${MONETDB_PROJECT_DIR}/sql/server/sql_privileges.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_optimizer.c
+${MONETDB_PROJECT_DIR}/sql/server/sql_datetime.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_psm.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_remote.c
+${MONETDB_PROJECT_DIR}/sql/server/sql_partition.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_optimize_exps.c
+${MONETDB_PROJECT_DIR}/sql/server/sql_query.c
+${MONETDB_PROJECT_DIR}/sql/server/sql_mvc.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_unnest.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_partition.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_optimize_proj.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_semantic.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_sequence.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_statistics.c
+${MONETDB_PROJECT_DIR}/sql/server/sql_atom.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_prop.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_optimize_others.c
+${MONETDB_PROJECT_DIR}/sql/server/sql_semantic.c
+${MONETDB_PROJECT_DIR}/sql/server/sql_scan.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_xml.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_propagate.c
+${MONETDB_PROJECT_DIR}/sql/server/rel_basetable.c
+
+#${MONETDB_PROJECT_DIR}/sql/benchmarks/alex/tomo.c
+#${MONETDB_PROJECT_DIR}/sql/benchmarks/alex/earth.c
+#${MONETDB_PROJECT_DIR}/sql/benchmarks/hist-uva/ground/main.c
+
+${MONETDB_PROJECT_DIR}/sql/common/sql_list.c
+${MONETDB_PROJECT_DIR}/sql/common/sql_backend.c
+${MONETDB_PROJECT_DIR}/sql/common/sql_keyword.c
+${MONETDB_PROJECT_DIR}/sql/common/sql_types.c
+${MONETDB_PROJECT_DIR}/sql/common/sql_hash.c
+${MONETDB_PROJECT_DIR}/sql/common/sql_string.c
+${MONETDB_PROJECT_DIR}/sql/common/sql_mem.c
+${MONETDB_PROJECT_DIR}/sql/common/exception_buffer.c
+${MONETDB_PROJECT_DIR}/sql/common/sql_stack.c
+${MONETDB_PROJECT_DIR}/sql/common/sql_changeset.c
+
+#${MONETDB_PROJECT_DIR}/buildtools/coverity_model.c
+
+#${MONETDB_PROJECT_DIR}/clients/examples/C/bincopyloops.c
+#${MONETDB_PROJECT_DIR}/clients/examples/C/streamcat.c
+#${MONETDB_PROJECT_DIR}/clients/examples/C/sample1.c
+#${MONETDB_PROJECT_DIR}/clients/examples/C/bincopydata.c
+#${MONETDB_PROJECT_DIR}/clients/examples/C/sample4.c
+#${MONETDB_PROJECT_DIR}/clients/examples/C/testcondvar.c
+#${MONETDB_PROJECT_DIR}/clients/examples/C/smack01.c
+#${MONETDB_PROJECT_DIR}/clients/examples/C/bincopytemporaldata.c
+#${MONETDB_PROJECT_DIR}/clients/examples/C/smack00.c
+#${MONETDB_PROJECT_DIR}/clients/examples/C/sample0.c
+#${MONETDB_PROJECT_DIR}/clients/examples/C/bincopyuuid.c
+
+${MONETDB_PROJECT_DIR}/clients/mapiclient/ReadlineTools.c
+${MONETDB_PROJECT_DIR}/clients/mapiclient/dotmonetdb.c
+${MONETDB_PROJECT_DIR}/clients/mapiclient/mclient.c
+${MONETDB_PROJECT_DIR}/clients/mapiclient/dump.c
+#${MONETDB_PROJECT_DIR}/clients/mapiclient/msqldump.c
+${MONETDB_PROJECT_DIR}/clients/mapiclient/mhelp.c
+
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLColumns.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLAllocStmt.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/ODBCUtil.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLEndTran.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLDrivers.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLGetConnectAttr.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLBindCol.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLSetConnectOption.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLGetDiagRec.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLGetFunctions.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLFreeStmt.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLStatistics.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLSetCursorName.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLGetCursorName.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLTransact.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLSetPos.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLProcedures.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLMoreResults.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLFreeConnect.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLSetStmtOption.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLSetStmtAttr.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLAllocEnv.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/ODBCDbc.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLRowCount.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLTablePrivileges.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLCancel.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/ODBCStmt.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/ODBCError.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLNumParams.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLBindParameter.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLConnect.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLGetEnvAttr.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLPrepare.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLSpecialColumns.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLCloseCursor.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLGetDescField.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLSetDescRec.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLBulkOperations.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLExecute.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLFreeEnv.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLFetch.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLBrowseConnect.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLExtendedFetch.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLParamOptions.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLDataSources.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLGetStmtAttr.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLNativeSql.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLGetDiagField.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLFetchScroll.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLSetConnectAttr.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLAllocHandle.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/ODBCDesc.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/ODBCConvert.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLSetScrollOptions.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLExecDirect.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLDriverConnect.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLNumResultCols.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLGetData.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/ODBCEnv.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLColAttribute.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLProcedureColumns.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLSetDescField.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLTables.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLPutData.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLSetEnvAttr.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLSetParam.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLCopyDesc.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLFreeHandle.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLColAttributes.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLDisconnect.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLGetTypeInfo.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLParamData.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLForeignKeys.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLGetDescRec.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLGetInfo.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLError.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLDescribeCol.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLAllocConnect.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLDescribeParam.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLColumnPrivileges.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLGetConnectOption.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLGetStmtOption.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/driver/SQLPrimaryKeys.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/tests/ODBCStmtAttr.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/tests/ODBCtester.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/tests/ODBCmetadata.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/tests/ODBCgetInfo.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/setup/drvcfg.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/samples/odbcsample1.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/samples/arraytest.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/winsetup/install.c
+#${MONETDB_PROJECT_DIR}/clients/odbc/winsetup/setup.c
+${MONETDB_PROJECT_DIR}/clients/mapilib/mapi.c
+
+#${MONETDB_PROJECT_DIR}/geom/lib/libgeom.c
+#${MONETDB_PROJECT_DIR}/geom/monetdb5/geom_upgrade.c
+#${MONETDB_PROJECT_DIR}/geom/monetdb5/geomBulk.c
+#${MONETDB_PROJECT_DIR}/geom/monetdb5/geom.c
+
+#${MONETDB_PROJECT_DIR}/ctest/monetdb5/mal/test_malInclude.c
+#${MONETDB_PROJECT_DIR}/ctest/monetdb5/mal/test_malEmbeddedBoot.c
+#${MONETDB_PROJECT_DIR}/ctest/tools/monetdbe/example_backup.c
+#${MONETDB_PROJECT_DIR}/ctest/tools/monetdbe/example1.c
+#${MONETDB_PROJECT_DIR}/ctest/tools/monetdbe/example_decimals.c
+#${MONETDB_PROJECT_DIR}/ctest/tools/monetdbe/example_temporal.c
+#${MONETDB_PROJECT_DIR}/ctest/tools/monetdbe/example_copy.c
+#${MONETDB_PROJECT_DIR}/ctest/tools/monetdbe/example_append.c
+#${MONETDB_PROJECT_DIR}/ctest/tools/monetdbe/cmocka_test.c
+#${MONETDB_PROJECT_DIR}/ctest/tools/monetdbe/example_connections.c
+#${MONETDB_PROJECT_DIR}/ctest/tools/monetdbe/example2.c
+#${MONETDB_PROJECT_DIR}/ctest/tools/monetdbe/example_proxy.c
+#${MONETDB_PROJECT_DIR}/ctest/tools/monetdbe/test_helper.c
+#${MONETDB_PROJECT_DIR}/ctest/tools/monetdbe/example_blob.c
+#${MONETDB_PROJECT_DIR}/ctest/tools/monetdbe/backup.c
+#${MONETDB_PROJECT_DIR}/ctest/tools/monetdbe/example_append_raw.c
+
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_type.c
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_resolve.c
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_utils.c
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_resource.c
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_parser.c
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_builder.c
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_instruction.c
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_stack.c
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_import.c
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_linker.c
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_runtime.c
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_exception.c
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_interpreter.c
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_listing.c
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal.c
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_embedded.c
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_authorize.c
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_session.c
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_module.c
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_atom.c
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_function.c
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_prelude.c
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_client.c
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_profiler.c
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_dataflow.c
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_scenario.c
+${MONETDB_PROJECT_DIR}/monetdb5/mal/mal_namespace.c
+
+#${MONETDB_PROJECT_DIR}/monetdb5/extras/rapi/rapi.c
+#${MONETDB_PROJECT_DIR}/monetdb5/extras/mal_optimizer_template/opt_sql_append.c
+
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/mdb.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/txtsim.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/remote.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/calc.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/sysmon.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/mal_io.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/batExtensions.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/batMask.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/inspect.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/tracer.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/orderidx.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/language.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/mal_mapi.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/iterator.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/bbp.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/sample.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/mkey.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/manual.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/mat.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/pcre.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/querylog.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/manifold.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/tablet.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/projectionpath.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/profiler.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/groupby.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/batcalc.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/clients.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/mal/tokenizer.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/atoms/strptime.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/atoms/inet.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/atoms/identifier.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/atoms/url.c
+#${MONETDB_PROJECT_DIR}/monetdb5/modules/atoms/xml.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/atoms/str.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/atoms/json.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/atoms/streams.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/atoms/mtime.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/atoms/color.c
+#${MONETDB_PROJECT_DIR}/monetdb5/modules/atoms/batxml.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/atoms/blob.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/atoms/uuid.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/kernel/mmath.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/kernel/algebra.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/kernel/aggr.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/kernel/bat5.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/kernel/alarm.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/kernel/batstr.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/kernel/microbenchmark.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/kernel/group.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/kernel/batmmath.c
+${MONETDB_PROJECT_DIR}/monetdb5/modules/kernel/batcolor.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_commonTerms.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_fastpath.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_garbageCollector.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_querylog.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_evaluate.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_support.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_dict.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_emptybind.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_candidates.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_wrapper.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_pipes.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_projectionpath.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_deadcode.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_postfix.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_coercion.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_for.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_matpack.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_reduce.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_aliases.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_mergetable.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/optimizer.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_macro.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_constants.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_pushselect.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_mitosis.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_costModel.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_inline.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_reorder.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_remoteQueries.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_profiler.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_remap.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_multiplex.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_generator.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_prelude.c
+${MONETDB_PROJECT_DIR}/monetdb5/optimizer/opt_dataflow.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_tracer.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_analytic_statistics.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_interprocess.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_analytic_func.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_bbp.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_sample.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_string.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_project.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_logger_old.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_group.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_tm.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_align.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_calc_compare_generic.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_utils.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_calc_compare_gt.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_imprints.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_batop.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_unique.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_delta.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_calc_mod.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_calc_compare_ne.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_search.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_calc_compare_eq.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_firstn.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_analytic_bounds.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_cross.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_subquery.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_posix.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_aggr.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_ssort.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_bat.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_calc_mul.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_orderidx.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_select.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_cand.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_value.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_strimps.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_atoms.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_qsort.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_hash.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_calc_div.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_system.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_storage.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_heap.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_calc.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_logger.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_join.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_calc_addsub.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_calc_convert.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_calc_compare_le.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_calc_compare_ge.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_calc_compare_lt.c
+${MONETDB_PROJECT_DIR}/gdk/gdk_time.c
+${MONETDB_PROJECT_DIR}/common/utils/sha.c
+${MONETDB_PROJECT_DIR}/common/utils/revision.c
+${MONETDB_PROJECT_DIR}/common/utils/md5.c
+${MONETDB_PROJECT_DIR}/common/utils/muuid.c
+${MONETDB_PROJECT_DIR}/common/utils/sha384-512.c
+${MONETDB_PROJECT_DIR}/common/utils/sha224-256.c
+${MONETDB_PROJECT_DIR}/common/utils/msabaoth.c
+${MONETDB_PROJECT_DIR}/common/utils/mcrypt.c
+${MONETDB_PROJECT_DIR}/common/utils/ripemd160.c
+${MONETDB_PROJECT_DIR}/common/utils/mutils.c
+${MONETDB_PROJECT_DIR}/common/utils/rmd160.c
+${MONETDB_PROJECT_DIR}/common/utils/prompt.c
+${MONETDB_PROJECT_DIR}/common/options/monet_options.c
+${MONETDB_PROJECT_DIR}/common/options/getopt.c
+${MONETDB_PROJECT_DIR}/common/options/getopt1.c
+${MONETDB_PROJECT_DIR}/common/stream/callback.c
+${MONETDB_PROJECT_DIR}/common/stream/pump.c
+${MONETDB_PROJECT_DIR}/common/stream/winio.c
+${MONETDB_PROJECT_DIR}/common/stream/memio.c
+${MONETDB_PROJECT_DIR}/common/stream/url_stream.c
+${MONETDB_PROJECT_DIR}/common/stream/mapi_stream.c
+${MONETDB_PROJECT_DIR}/common/stream/bz2_stream.c
+${MONETDB_PROJECT_DIR}/common/stream/stdio_stream.c
+${MONETDB_PROJECT_DIR}/common/stream/bs.c
+${MONETDB_PROJECT_DIR}/common/stream/iconv_stream.c
+${MONETDB_PROJECT_DIR}/common/stream/fwf.c
+${MONETDB_PROJECT_DIR}/common/stream/lz4_stream.c
+${MONETDB_PROJECT_DIR}/common/stream/blackhole.c
+
+${MONETDB_PROJECT_DIR}/common/stream/stream.c
+
+${MONETDB_PROJECT_DIR}/common/stream/compressed.c
+${MONETDB_PROJECT_DIR}/common/stream/text_stream.c
+${MONETDB_PROJECT_DIR}/common/stream/bstream.c
+${MONETDB_PROJECT_DIR}/common/stream/xz_stream.c
+${MONETDB_PROJECT_DIR}/common/stream/socket_stream.c
+${MONETDB_PROJECT_DIR}/common/stream/gz_stream.c
+${MONETDB_PROJECT_DIR}/common/stream/rw.c
+
+#${MONETDB_PROJECT_DIR}/testing/fallocate.c
+
+#${MONETDB_PROJECT_DIR}/tools/merovingian/utils/glob.c
+#${MONETDB_PROJECT_DIR}/tools/merovingian/utils/utils.c
+#${MONETDB_PROJECT_DIR}/tools/merovingian/utils/properties.c
+#${MONETDB_PROJECT_DIR}/tools/merovingian/utils/control.c
+#${MONETDB_PROJECT_DIR}/tools/merovingian/utils/database.c
+#${MONETDB_PROJECT_DIR}/tools/merovingian/client/monetdb.c
+#${MONETDB_PROJECT_DIR}/tools/merovingian/daemon/argvcmds.c
+#${MONETDB_PROJECT_DIR}/tools/merovingian/daemon/connections.c
+#${MONETDB_PROJECT_DIR}/tools/merovingian/daemon/forkmserver.c
+#${MONETDB_PROJECT_DIR}/tools/merovingian/daemon/controlrunner.c
+#${MONETDB_PROJECT_DIR}/tools/merovingian/daemon/client.c
+#${MONETDB_PROJECT_DIR}/tools/merovingian/daemon/proxy.c
+#${MONETDB_PROJECT_DIR}/tools/merovingian/daemon/handlers.c
+#${MONETDB_PROJECT_DIR}/tools/merovingian/daemon/discoveryrunner.c
+#${MONETDB_PROJECT_DIR}/tools/merovingian/daemon/merovingian.c
+#${MONETDB_PROJECT_DIR}/tools/merovingian/daemon/snapshot.c
+#${MONETDB_PROJECT_DIR}/tools/merovingian/daemon/multiplex-funnel.c
+#${MONETDB_PROJECT_DIR}/tools/monetdbe/monetdbe.c
+#${MONETDB_PROJECT_DIR}/tools/monetdbe/monetdbe_mapi.c
+#${MONETDB_PROJECT_DIR}/tools/mserver/mserver5.c
+#${MONETDB_PROJECT_DIR}/tools/mserver/shutdowntest.c
+
+
+)
+
+add_executable(test 
+        test.c
+)
+#set(lib "monetdb5 pthread dl mapi ssl crypto stream curl lzma lbz2 m")
+#set(lib "-l${CMAKE_SOURCE_DIR}/build/libmonetdb5.so -lpthread -ldl -lm")
+#set(lib "-L${CMAKE_SOURCE_DIR}/build ${CMAKE_SOURCE_DIR}/build/libmonetdb5.so -lpthread -ldl -lm")
+set(lib "monetdb5 pthread dl m")
+
+if (WIN32)
+        set(lib "libmonetdb5")
+endif()
+
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
+#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
+
+#install(TARGETS libmonetdb5 DESTINATION ./)
+#link_directories(./ ./build)
+
+#set(${LD_LIBRARY_PATH} "${PROJECT_BINARY_DIR}")
+
+#include_directories("${PROJECT_BINARY_DIR}")
+#link_directories("${PROJECT_BINARY_DIR}")
+
+#target_include_directories(test PUBLIC "${CMAKE_SOURCE_DIR}")
+#target_link_directories(test PUBLIC "${CMAKE_SOURCE_DIR}")
+
+#find_library(MONETDB_L NAMES ${CMAKE_SOURCE_DIR}/build)
+find_library(PTHREAD_L NAMES pthread)
+find_library(DL_L NAMES dl)
+find_library(M_L NAMES m)
+
+find_library(LZMA_L NAMES lzma)
+find_library(Z_L NAMES z)
+#find_library(STREAM_L NAMES bz2)
+
+target_link_libraries(test PUBLIC
+    ${PROJECT_BINARY_DIR}/libmonetdb5.so
+    ${PTHREAD_L}
+    ${DL_L}
+    #${STREAM_L}
+    ${LZMA_L}
+    ${Z_L}
+    ${M_L}
+)
+
+#target_link_libraries(test ${lib})
